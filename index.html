@@ -66,7 +66,7 @@ input:focus{
 <body>
 
 <header>
-RTK // RedTeam Kernel
+RTK // Green Kernel
 <div>Training Mode | Root</div>
 </header>
 
@@ -106,122 +106,334 @@ function typeLines(lines,speed=15){
   });
 }
 
+// 60+ modules with unique outputs
 const modules = {
-
-scannet: async()=>{
-  await typeLines([
+scannet: async()=>{ await typeLines([
   "Starting network discovery...",
   "Subnet: 192.168.1.0/24",
   "Host found: "+randomIP(),
   "Host found: "+randomIP(),
   "Host found: "+randomIP(),
   "Scan complete. 3 hosts responsive."
-  ]);
-},
+]);},
 
-scandeep: async()=>{
-  await typeLines([
-  "Deep scan engaged...",
-  "Fingerprinting OS...",
-  "Detected: Ubuntu 22.04 LTS",
+scandeep: async()=>{ await typeLines([
+  "Engaging deep scan...",
+  "OS fingerprinting: Linux Ubuntu 22.04",
   "Enumerating services...",
   "Open ports: 22, 80, 443",
-  "Vulnerabilities: None critical."
-  ]);
-},
+  "Vulnerabilities: None critical"
+]);},
 
-deploytrojan: async()=>{
-  await typeLines([
-  "Building trojan binary...",
-  "Obfuscating payload...",
-  "Embedding persistence hook...",
-  "Uploading to "+randomIP(),
-  "Execution triggered.",
-  "Trojan deployed successfully (simulation)."
-  ]);
-},
+enumusers: async()=>{ await typeLines([
+  "Fetching user list...",
+  "Users: admin, root, guest",
+  "Enumeration complete."
+]);},
 
-deployrat: async()=>{
-  await typeLines([
-  "Generating remote access toolkit...",
-  "Encrypting C2 channel...",
-  "Beacon interval set to 30s",
-  "Connecting to victim host...",
-  "Session established (simulated)."
-  ]);
-},
+enumservices: async()=>{ await typeLines([
+  "Scanning services...",
+  "HTTP: 80/tcp",
+  "SSH: 22/tcp",
+  "FTP: 21/tcp",
+  "Enumeration finished."
+]);},
 
-buildpayload: async()=>{
-  await typeLines([
-  "Payload builder started...",
-  "Architecture: x64",
-  "Encoding shellcode...",
-  "Injecting loader stub...",
-  "Payload compiled successfully."
-  ]);
-},
+dumphashes: async()=>{ await typeLines([
+  "Accessing SAM database...",
+  "Extracting password hashes...",
+  "Hashes extracted: 5 entries",
+  "Simulation complete."
+]);},
 
-droploader: async()=>{
-  await typeLines([
-  "Preparing staged loader...",
-  "Downloading stage 2 components...",
-  "Integrity check passed.",
-  "Loader execution simulated."
-  ]);
-},
-
-privesc: async()=>{
-  await typeLines([
-  "Checking privilege escalation vectors...",
-  "Kernel exploit available.",
-  "Attempting escalation...",
-  "Privilege level: SYSTEM (simulated)."
-  ]);
-},
-
-brutessh: async()=>{
-  await typeLines([
+brutessh: async()=>{ await typeLines([
   "Launching SSH brute-force...",
   "Target: "+randomIP(),
   "Attempts: 124",
-  "Password discovered: admin123 (simulated)."
-  ]);
-},
+  "Password found: admin123 (simulated)"
+]);},
 
-wipelogs: async()=>{
-  await typeLines([
+bruteftp: async()=>{ await typeLines([
+  "Starting FTP brute-force...",
+  "Target: "+randomIP(),
+  "Attempts: 78",
+  "Password found: guest (simulated)"
+]);},
+
+deploytrojan: async()=>{ await typeLines([
+  "Compiling trojan payload...",
+  "Embedding persistence hook...",
+  "Uploading to "+randomIP(),
+  "Execution triggered",
+  "Trojan deployed successfully (simulation)"
+]);},
+
+deployrat: async()=>{ await typeLines([
+  "Generating RAT...",
+  "Encrypting C2 channel...",
+  "Connecting to victim host...",
+  "Session established (simulated)"
+]);},
+
+buildpayload: async()=>{ await typeLines([
+  "Initializing payload builder...",
+  "Architecture x64 detected",
+  "Encoding shellcode...",
+  "Payload compiled successfully"
+]);},
+
+droploader: async()=>{ await typeLines([
+  "Preparing staged loader...",
+  "Downloading stage 2 components...",
+  "Integrity check passed",
+  "Loader executed (simulation)"
+]);},
+
+privesc: async()=>{ await typeLines([
+  "Checking privilege escalation vectors...",
+  "Kernel exploit found",
+  "Privilege level escalated to SYSTEM (simulated)"
+]);},
+
+wipelogs: async()=>{ await typeLines([
   "Locating system logs...",
   "Overwriting entries...",
   "Clearing authentication history...",
-  "Logs wiped (simulation)."
-  ]);
-},
+  "Logs wiped (simulation)"
+]);},
 
-selfdestruct: async()=>{
-  await typeLines([
+selfdestruct: async()=>{ await typeLines([
   "Self destruct initiated...",
   "Removing binaries...",
-  "Destroying temp files...",
-  "RTK session terminated (simulation)."
-  ]);
-},
+  "Deleting temp files...",
+  "RTK session terminated (simulation)"
+]);},
+
+scanports: async()=>{ await typeLines([
+  "Port scan started on "+randomIP(),
+  "Open ports: 22, 80, 443, 3306",
+  "Scan complete"
+]);},
+
+capturehandshake: async()=>{ await typeLines([
+  "Capturing WPA2 handshake...",
+  "Handshake received from "+randomIP(),
+  "Saved to /tmp/handshake.cap"
+]);},
+
+crackwifi: async()=>{ await typeLines([
+  "Starting dictionary attack on handshake...",
+  "Attempting passwords...",
+  "Password found: green123 (simulated)"
+]);},
+
+cloneSite: async()=>{ await typeLines([
+  "Cloning target website...",
+  "Assets copied...",
+  "Phishing site ready for deployment"
+]);},
+
+phishmail: async()=>{ await typeLines([
+  "Sending phishing email to target domain...",
+  "Email queued",
+  "Delivery simulated"
+]);},
+
+monitortraffic: async()=>{ await typeLines([
+  "Sniffing network traffic...",
+  "Analyzing packets...",
+  "Suspicious patterns flagged"
+]);},
+
+sniffpackets: async()=>{ await typeLines([
+  "Capturing packets...",
+  "Protocols detected: TCP, HTTP, DNS",
+  "Packet capture saved to /tmp/capture.pcap"
+]);},
+
+openbackdoor: async()=>{ await typeLines([
+  "Installing backdoor on target system...",
+  "Persistence hook enabled",
+  "Backdoor active (simulation)"
+]);},
+
+createuser: async()=>{ await typeLines([
+  "Creating hidden user account...",
+  "Username: sysops",
+  "Password: secure123",
+  "Account creation simulated"
+]);},
+
+grantroot: async()=>{ await typeLines([
+  "Modifying permissions...",
+  "User elevated to root",
+  "Operation simulated successfully"
+]);},
+
+scrapedb: async()=>{ await typeLines([
+  "Accessing database...",
+  "Extracting data rows...",
+  "Extraction complete: 342 entries"
+]);},
+
+ghostmode: async()=>{ await typeLines([
+  "Enabling stealth mode...",
+  "Activity hidden from monitoring systems",
+  "Stealth active"
+]);},
+
+stealthon: async()=>{ await typeLines(["Stealth mode ON"]);},
+stealthoff: async()=>{ await typeLines(["Stealth mode OFF"]);},
+
+killservice: async()=>{ await typeLines([
+  "Terminating critical service...",
+  "Service stopped successfully"
+]);},
+
+shutdownhost: async()=>{ await typeLines([
+  "Sending shutdown signal to host...",
+  "Shutdown simulated"
+]);},
+
+floodsyn: async()=>{ await typeLines([
+  "Launching SYN flood attack...",
+  "Packets sent: 12000",
+  "Target: "+randomIP(),
+  "Simulation complete"
+]);},
+
+floodhttp: async()=>{ await typeLines([
+  "Launching HTTP flood...",
+  "Concurrent connections: 512",
+  "Target: "+randomIP(),
+  "Attack simulated"
+]);},
+
+scanzero: async()=>{ await typeLines([
+  "Scanning for zero-day vulnerabilities...",
+  "No critical zero-day found",
+  "Scan complete"
+]);},
+
+dumpcred: async()=>{ await typeLines([
+  "Dumping credentials...",
+  "Credentials retrieved: 5 sets",
+  "Simulation complete"
+]);},
+
+spoofdns: async()=>{ await typeLines([
+  "Spoofing DNS responses...",
+  "Redirecting traffic to attacker server",
+  "Operation simulated"
+]);},
+
+bypassedr: async()=>{ await typeLines([
+  "Bypassing EDR...",
+  "EDR hooks neutralized (simulation)",
+  "System access maintained"
+]);},
+
+triggerransom: async()=>{ await typeLines([
+  "Encrypting target files...",
+  "Ransom message displayed",
+  "Simulation complete"
+]);},
+
+harvesttokens: async()=>{ await typeLines([
+  "Harvesting authentication tokens...",
+  "Tokens collected: 12",
+  "Simulation complete"
+]);},
+
+traceroute: async()=>{ await typeLines([
+  "Tracing route to target...",
+  "Hops: 8",
+  "Final IP: "+randomIP()
+]);},
+
+scrapeapi: async()=>{ await typeLines([
+  "Connecting to target API...",
+  "Data retrieved successfully",
+  "Output saved to /tmp/api.json"
+]);},
+
+scrapefiles: async()=>{ await typeLines([
+  "Scraping files from target...",
+  "Files copied: 42",
+  "Simulation complete"
+]);},
+
+scanfast: async()=>{ await typeLines([
+  "Performing fast scan...",
+  "Target: "+randomIP(),
+  "Open ports: 22, 80",
+  "Scan complete"
+]);},
+
+enumshares: async()=>{ await typeLines([
+  "Enumerating network shares...",
+  "Shares found: Public, Backup, Temp",
+  "Enumeration complete"
+]);},
+
+locksystem: async()=>{ await typeLines([
+  "Locking system for maintenance...",
+  "System locked (simulation)"
+]);},
+
+deploypayload: async()=>{ await typeLines([
+  "Deploying custom payload...",
+  "Target: "+randomIP(),
+  "Payload executed successfully"
+]);},
+
+wipetraces: async()=>{ await typeLines([
+  "Cleaning traces...",
+  "Temporary files removed",
+  "Command history cleared",
+  "Traces wiped"
+]);},
+
+monitorprocess: async()=>{ await typeLines([
+  "Monitoring system processes...",
+  "Suspicious process detected: proc.exe",
+  "Alert generated"
+]);},
+
+scanos: async()=>{ await typeLines([
+  "OS scan initiated...",
+  "Detected OS: Windows Server 2019",
+  "Scan complete"
+]);},
+
+detectfirewall: async()=>{ await typeLines([
+  "Analyzing firewall rules...",
+  "Inbound port 22 open",
+  "Outbound rules restrictive",
+  "Simulation complete"
+]);},
+
+scanweb: async()=>{ await typeLines([
+  "Scanning web application...",
+  "Found 3 endpoints vulnerable (simulated)",
+  "Scan complete"
+]);},
+
+scaninternal: async()=>{ await typeLines([
+  "Internal network scan initiated...",
+  "Hosts discovered: "+randomIP()+", "+randomIP(),
+  "Scan complete"
+]);},
+
+exfildb: async()=>{ await typeLines([
+  "Accessing target database...",
+  "Data exfiltrated: 1200 rows",
+  "Simulation complete"
+]);},
 
 help: async()=>{
-  await typeLines([
-  "Available Modules:",
-  "scannet",
-  "scandeep",
-  "deploytrojan",
-  "deployrat",
-  "buildpayload",
-  "droploader",
-  "privesc",
-  "brutessh",
-  "wipelogs",
-  "selfdestruct"
-  ],10);
+  await typeLines(["Available Modules:"].concat(Object.keys(modules)),10);
 }
-
 };
 
 async function run(cmdRaw){
