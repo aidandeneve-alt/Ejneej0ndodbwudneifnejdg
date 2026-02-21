@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CyberSec Training Terminal</title>
+<style>
+    body {
+        background-color: black;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        margin: 0;
+        padding: 20px;
+    }
+
+    #terminal {
+        height: 90vh;
+        overflow-y: auto;
+        white-space: pre-wrap;
+    }
+
+    .input-line {
+        display: flex;
+    }
+
+    .prompt {
+        margin-right: 5px;
+    }
+
+    input {
+        background: black;
+        border: none;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        font-size: 16px;
+        outline: none;
+        width: 100%;
+    }
+
+    .warning {
+        color: red;
+    }
+</style>
+</head>
+<body>
+
+<div id="terminal"></div>
+
+<div class="input-line">
+    <div class="prompt">root@system:~$</div>
+    <input type="text" id="commandInput" autofocus />
+</div>
+
+<script>
+const terminal = document.getElementById("terminal");
+const input = document.getElementById("commandInput");
+
+const commands = {
+    help: `
+Available commands:
+- scan network
+- shutdown database
+- deploy trojan
+- exfiltrate data
+- encrypt files
+- clear logs
+- self destruct
+- help
+    `,
+
+    "scan network": `
+[+] Initializing network scan...
+[+] Scanning 192.168.0.0/24
+[+] 14 active devices detected
+[+] 3 vulnerable endpoints found
+[+] Scan complete.
+    `,
+
+    "shutdown database": `
+[!] WARNING: Attempting database shutdown...
+[+] Connecting to DB cluster...
+[+] Sending termination signal...
+[+] Database services offline.
+[✓] Operation simulated successfully.
+    `,
+
+    "deploy trojan": `
+[!] Deploying remote payload...
+[+] Generating obfuscated binary...
+[+] Injecting into target process...
+[✓] Trojan successfully deployed (simulation).
+    `,
+
+    "exfiltrate data": `
+[+] Compressing sensitive files...
+[+] Encrypting transfer tunnel...
+[+] Uploading 2.4GB to remote node...
+[✓] Data exfiltration complete (simulated).
+    `,
+
+    "encrypt files": `
+[!] Starting filesystem encryption...
+[+] Encrypting /home directory...
+[+] Encrypting /var directory...
+[✓] All files encrypted (simulation only).
+    `,
+
+    "clear logs": `
+[+] Locating system logs...
+[+] Overwriting event records...
+[✓] Logs cleared successfully (simulated).
+    `,
+
+    "self destruct": `
+[!!!] INITIATING SELF DESTRUCT SEQUENCE
+[+] Deleting core system files...
+[+] Overwriting boot sector...
+[✓] System destroyed (simulation).
+    `
+};
+
+function typeOutput(text) {
+    let i = 0;
+    const interval = setInterval(() => {
+        terminal.innerHTML += text[i];
+        terminal.scrollTop = terminal.scrollHeight;
+        i++;
+        if (i >= text.length) clearInterval(interval);
+    }, 10);
+}
+
+input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        const cmd = input.value.trim().toLowerCase();
+        terminal.innerHTML += `\nroot@system:~$ ${cmd}\n`;
+
+        if (commands[cmd]) {
+            typeOutput(commands[cmd] + "\n");
+        } else {
+            typeOutput("Command not found. Type 'help' for available commands.\n");
+        }
+
+        input.value = "";
+    }
+});
+
+terminal.innerHTML = `
+=== CYBERSECURITY TRAINING TERMINAL ===
+Educational Simulation Environment
+Type 'help' to see available commands.
+`;
+</script>
+
+</body>
+</html>
