@@ -2,152 +2,226 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CyberSec Training Terminal</title>
+<title>CyberSec Training Simulator</title>
+
 <style>
-    body {
-        background-color: black;
-        color: #00ff00;
-        font-family: "Courier New", monospace;
-        margin: 0;
-        padding: 20px;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    #terminal {
-        height: 90vh;
-        overflow-y: auto;
-        white-space: pre-wrap;
-    }
+body {
+    font-family: 'Courier New', monospace;
+    background: radial-gradient(circle at top, #0f2027, #000000);
+    color: #00ff88;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
 
-    .input-line {
-        display: flex;
-    }
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: rgba(0, 0, 0, 0.9);
+    border-right: 2px solid #00ff88;
+    padding: 20px;
+}
 
-    .prompt {
-        margin-right: 5px;
-    }
+.sidebar h2 {
+    margin-bottom: 20px;
+    color: #00ffaa;
+}
 
-    input {
-        background: black;
-        border: none;
-        color: #00ff00;
-        font-family: "Courier New", monospace;
-        font-size: 16px;
-        outline: none;
-        width: 100%;
-    }
+.button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: black;
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-    .warning {
-        color: red;
-    }
+.button:hover {
+    background: #00ff88;
+    color: black;
+    box-shadow: 0 0 10px #00ff88;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Status bar */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.status {
+    padding: 5px 10px;
+    border: 1px solid #00ff88;
+}
+
+/* Terminal */
+.terminal {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #00ff88;
+    padding: 15px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin-top: 10px;
+    height: 20px;
+    width: 100%;
+    border: 1px solid #00ff88;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #00ff88;
+    transition: width 0.2s;
+}
+
+/* Warning */
+.warning {
+    color: red;
+}
+
+/* Flicker animation */
+@keyframes flicker {
+    0% { opacity: 0.95; }
+    50% { opacity: 1; }
+    100% { opacity: 0.95; }
+}
+
+.terminal {
+    animation: flicker 1.5s infinite;
+}
 </style>
 </head>
+
 <body>
 
-<div id="terminal"></div>
+<div class="sidebar">
+    <h2>⚡ Control Panel</h2>
 
-<div class="input-line">
-    <div class="prompt">root@system:~$</div>
-    <input type="text" id="commandInput" autofocus />
+    <button class="button" onclick="runAction('scan')">Scan Network</button>
+    <button class="button" onclick="runAction('database')">Shutdown Database</button>
+    <button class="button" onclick="runAction('trojan')">Deploy Trojan</button>
+    <button class="button" onclick="runAction('exfiltrate')">Exfiltrate Data</button>
+    <button class="button" onclick="runAction('encrypt')">Encrypt Files</button>
+    <button class="button" onclick="runAction('logs')">Clear Logs</button>
+    <button class="button" onclick="runAction('destruct')">Self Destruct</button>
+</div>
+
+<div class="main">
+
+    <div class="status-bar">
+        <div class="status">System: ONLINE</div>
+        <div class="status">Access Level: ROOT</div>
+        <div class="status">Firewall: DISABLED</div>
+    </div>
+
+    <div class="terminal" id="terminal">
+=== CYBERSECURITY TRAINING SIMULATOR ===
+Educational Use Only
+Click an action on the left to simulate.
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
 </div>
 
 <script>
 const terminal = document.getElementById("terminal");
-const input = document.getElementById("commandInput");
+const progressBar = document.getElementById("progressBar");
 
-const commands = {
-    help: `
-Available commands:
-- scan network
-- shutdown database
-- deploy trojan
-- exfiltrate data
-- encrypt files
-- clear logs
-- self destruct
-- help
-    `,
-
-    "scan network": `
-[+] Initializing network scan...
-[+] Scanning 192.168.0.0/24
-[+] 14 active devices detected
-[+] 3 vulnerable endpoints found
-[+] Scan complete.
-    `,
-
-    "shutdown database": `
-[!] WARNING: Attempting database shutdown...
-[+] Connecting to DB cluster...
-[+] Sending termination signal...
-[+] Database services offline.
-[✓] Operation simulated successfully.
-    `,
-
-    "deploy trojan": `
-[!] Deploying remote payload...
-[+] Generating obfuscated binary...
-[+] Injecting into target process...
-[✓] Trojan successfully deployed (simulation).
-    `,
-
-    "exfiltrate data": `
-[+] Compressing sensitive files...
-[+] Encrypting transfer tunnel...
-[+] Uploading 2.4GB to remote node...
-[✓] Data exfiltration complete (simulated).
-    `,
-
-    "encrypt files": `
-[!] Starting filesystem encryption...
-[+] Encrypting /home directory...
-[+] Encrypting /var directory...
-[✓] All files encrypted (simulation only).
-    `,
-
-    "clear logs": `
-[+] Locating system logs...
-[+] Overwriting event records...
-[✓] Logs cleared successfully (simulated).
-    `,
-
-    "self destruct": `
-[!!!] INITIATING SELF DESTRUCT SEQUENCE
-[+] Deleting core system files...
-[+] Overwriting boot sector...
-[✓] System destroyed (simulation).
-    `
-};
-
-function typeOutput(text) {
+function typeText(text, speed = 15) {
     let i = 0;
     const interval = setInterval(() => {
         terminal.innerHTML += text[i];
         terminal.scrollTop = terminal.scrollHeight;
         i++;
         if (i >= text.length) clearInterval(interval);
-    }, 10);
+    }, speed);
 }
 
-input.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        const cmd = input.value.trim().toLowerCase();
-        terminal.innerHTML += `\nroot@system:~$ ${cmd}\n`;
-
-        if (commands[cmd]) {
-            typeOutput(commands[cmd] + "\n");
-        } else {
-            typeOutput("Command not found. Type 'help' for available commands.\n");
+function simulateProgress(callback) {
+    progressBar.style.width = "0%";
+    let width = 0;
+    const interval = setInterval(() => {
+        width++;
+        progressBar.style.width = width + "%";
+        if (width >= 100) {
+            clearInterval(interval);
+            callback();
         }
+    }, 20);
+}
 
-        input.value = "";
-    }
-});
+function runAction(action) {
+    terminal.innerHTML += "\n\n> Initiating operation...\n";
 
-terminal.innerHTML = `
-=== CYBERSECURITY TRAINING TERMINAL ===
-Educational Simulation Environment
-Type 'help' to see available commands.
-`;
+    simulateProgress(() => {
+
+        const outputs = {
+            scan: `
+[+] Scanning network 192.168.1.0/24
+[+] 12 active devices detected
+[+] 2 vulnerable systems found
+[✓] Scan complete.
+            `,
+            database: `
+[!] Connecting to DB Cluster...
+[+] Sending termination packets...
+[✓] Database shutdown simulated.
+            `,
+            trojan: `
+[+] Generating payload...
+[+] Obfuscating binary...
+[✓] Trojan deployed (simulation).
+            `,
+            exfiltrate: `
+[+] Compressing files...
+[+] Establishing encrypted tunnel...
+[✓] Data exfiltration complete (simulation).
+            `,
+            encrypt: `
+[!] Encrypting file system...
+[+] Locking directories...
+[✓] Files encrypted (simulation).
+            `,
+            logs: `
+[+] Overwriting log sectors...
+[✓] Logs cleared (simulation).
+            `,
+            destruct: `
+[!!!] SELF DESTRUCT INITIATED
+[+] Deleting system32...
+[+] Corrupting bootloader...
+[✓] System destroyed (simulation).
+            `
+        };
+
+        typeText(outputs[action] || "Unknown action.\n");
+    });
+}
 </script>
 
 </body>
