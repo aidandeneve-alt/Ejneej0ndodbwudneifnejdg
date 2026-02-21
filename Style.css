@@ -1,119 +1,198 @@
-/* Root colors */
-:root{
-  --bg:#000000;
-  --panel:#001100;
-  --accent:#00ff00;
-  --text:#00ff00;
-  --muted:#007700;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTK // Green Kernel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+RTK // Green Kernel
+<div>Training Mode | Root</div>
+</header>
+
+<div class="output" id="output">
+RTK initialized.<br>
+Type <span class="prompt">help</span> to list modules.
+</div>
+
+<div class="command-bar">
+<input id="commandInput" placeholder="Enter module..." autofocus>
+</div>
+
+<script>
+const output = document.getElementById("output");
+const input = document.getElementById("commandInput");
+
+function randomIP() {
+  return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
 }
 
-/* Force all text to inherit green */
-body, body * {
-  color: var(--text) !important;
-  background: transparent !important;
+// Slow typing function with span wrapping to enforce green text
+function typeLines(lines, speed=120){
+  return new Promise(resolve=>{
+    let i = 0;
+
+    function nextLine(){
+      if(i >= lines.length){
+        resolve();
+        return;
+      }
+
+      let text = lines[i];
+      let charIndex = 0;
+      let span = document.createElement("span"); // wrap each line
+      output.appendChild(span);
+
+      function typeChar(){
+        if(charIndex < text.length){
+          span.appendChild(document.createTextNode(text[charIndex]));
+          output.scrollTop = output.scrollHeight;
+          charIndex++;
+          setTimeout(typeChar, speed);
+        } else {
+          output.appendChild(document.createElement("br"));
+          i++;
+          setTimeout(nextLine, speed * 3);
+        }
+      }
+
+      typeChar();
+    }
+
+    nextLine();
+  });
 }
 
-/* General body */
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:monospace;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
+function normalize(cmd){
+  return cmd.toLowerCase().replace(/[-\s]/g,"");
 }
 
-/* Header */
-header{
-  padding:12px 18px;
-  background:var(--panel);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #003300;
-  font-weight:bold;
-  font-size:16px;
+// All modules with unique outputs
+const modules = {
+scannet: async()=>{ await typeLines([
+  "Starting network discovery...",
+  "Subnet: 192.168.1.0/24",
+  "Host found: "+randomIP(),
+  "Host found: "+randomIP(),
+  "Host found: "+randomIP(),
+  "Scan complete. 3 hosts responsive."
+]);},
+
+scandeep: async()=>{ await typeLines([
+  "Engaging deep scan...",
+  "OS fingerprinting: Linux Ubuntu 22.04",
+  "Enumerating services...",
+  "Open ports: 22, 80, 443",
+  "Vulnerabilities: None critical"
+]);},
+
+deploytrojan: async()=>{ await typeLines([
+  "Compiling trojan payload...",
+  "Embedding persistence hook...",
+  "Uploading to "+randomIP(),
+  "Execution triggered",
+  "Trojan deployed successfully (simulation)"
+]);},
+
+deployrat: async()=>{ await typeLines([
+  "Generating RAT...",
+  "Encrypting C2 channel...",
+  "Connecting to victim host...",
+  "Session established (simulated)"
+]);},
+
+buildpayload: async()=>{ await typeLines([
+  "Initializing payload builder...",
+  "Architecture x64 detected",
+  "Encoding shellcode...",
+  "Payload compiled successfully"
+]);},
+
+droploader: async()=>{ await typeLines([
+  "Preparing staged loader...",
+  "Downloading stage 2 components...",
+  "Integrity check passed",
+  "Loader executed (simulation)"
+]);},
+
+privesc: async()=>{ await typeLines([
+  "Checking privilege escalation vectors...",
+  "Kernel exploit found",
+  "Privilege level escalated to SYSTEM (simulated)"
+]);},
+
+wipelogs: async()=>{ await typeLines([
+  "Locating system logs...",
+  "Overwriting entries...",
+  "Clearing authentication history...",
+  "Logs wiped (simulation)"
+]);},
+
+selfdestruct: async()=>{
+  await typeLines([
+    ">>> INITIATING FAILSAFE PROTOCOL",
+    "Disabling input interface...",
+    "Terminating modules...",
+    "Overwriting runtime memory...",
+    "Destroying kernel..."
+  ], 120);
+
+  input.disabled = true;
+  document.body.classList.add("glitch");
+
+  setTimeout(()=>{
+    document.body.innerHTML = `
+      <div class="destruct-screen">
+        <div>⚠ SYSTEM FAILURE ⚠</div>
+        <br>
+        <div>CORE MEMORY CORRUPTED</div>
+        <div>RUNTIME DESTROYED</div>
+        <br>
+        <div>NO RECOVERY AVAILABLE</div>
+        <br>
+        <div style="font-size:14px; opacity:0.6;">
+        Session permanently terminated.
+        </div>
+      </div>
+    `;
+  }, 4000);
+},
+
+help: async()=>{
+  await typeLines(["Available Modules:"].concat(Object.keys(modules)),10);
+}
+};
+
+// Run command
+async function run(cmdRaw){
+  const clean = normalize(cmdRaw);
+  let promptSpan = document.createElement("span");
+  promptSpan.className = "prompt";
+  promptSpan.textContent = "rtk >";
+  output.appendChild(promptSpan);
+
+  output.appendChild(document.createTextNode(" " + cmdRaw));
+  output.appendChild(document.createElement("br"));
+
+  if(modules[clean]){
+    await modules[clean]();
+  } else {
+    await typeLines(["Module not recognized."],10);
+  }
 }
 
-/* Output console */
-.output{
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
-  background:#000800;
-  font-size:14px;
-  line-height:1.6em;
-  white-space:pre-wrap;
-  color: var(--text);
-}
+// Listen for enter key
+input.addEventListener("keydown", e=>{
+  if(e.key === "Enter"){
+    const cmd = input.value.trim();
+    if(cmd !== "") run(cmd);
+    input.value = "";
+  }
+});
+</script>
 
-/* Command bar */
-.command-bar{
-  padding:10px;
-  background:var(--panel);
-  border-top:1px solid #003300;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  background:#000800;
-  border:1px solid #003300;
-  color:var(--text);
-  font-family:monospace;
-  font-size:14px;
-  caret-color: var(--accent);
-}
-
-input:focus{
-  outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 5px var(--accent);
-}
-
-/* Prompt text */
-.prompt{
-  color:var(--accent);
-  display:block;
-}
-
-/* Glitch animation */
-.glitch{
-  animation: glitch 0.2s infinite;
-}
-
-@keyframes glitch{
-  0% { transform: translate(2px, -2px); }
-  25% { transform: translate(-2px, 2px); }
-  50% { transform: translate(-2px, -2px); }
-  75% { transform: translate(2px, 2px); }
-  100% { transform: translate(0); }
-}
-
-/* Self-destruct screen */
-.destruct-screen{
-  position:fixed;
-  inset:0;
-  background:black;
-  color:red;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-size:22px;
-  text-align:center;
-  z-index:9999;
-}
-
-/* Optional message styles */
-.warn{color:#ff0000; display:block;}
-.success{color:#00ff00; display:block;}
-.error{color:#ff4444; display:block;}
-
-/* Mobile responsive */
-@media(max-width:768px){
-  header{font-size:14px;}
-  .output{font-size:13px; padding:15px;}
-  input{font-size:13px; padding:8px;}
-}
+</body>
+</html>
