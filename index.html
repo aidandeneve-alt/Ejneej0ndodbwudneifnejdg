@@ -2,48 +2,44 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CyberSec Training Simulator</title>
-
+<title>CyberSec Advanced Simulator</title>
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
     font-family: 'Courier New', monospace;
-    background: radial-gradient(circle at top, #0f2027, #000000);
-    color: #00ff88;
     height: 100vh;
     display: flex;
     overflow: hidden;
+    background: black;
+    color: #00ff88;
+}
+/* Matrix background */
+#matrix {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
 /* Sidebar */
 .sidebar {
-    width: 280px;
-    background: rgba(0, 0, 0, 0.9);
+    width: 300px;
+    background: rgba(0,0,0,0.95);
     border-right: 2px solid #00ff88;
     padding: 20px;
+    overflow-y: auto;
 }
-
-.sidebar h2 {
-    margin-bottom: 20px;
-    color: #00ffaa;
-}
-
+.sidebar h2 { margin-bottom: 20px; color: #00ffaa; }
 .button {
     width: 100%;
     padding: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     background: black;
     border: 1px solid #00ff88;
     color: #00ff88;
     cursor: pointer;
     transition: 0.3s;
 }
-
 .button:hover {
     background: #00ff88;
     color: black;
@@ -53,11 +49,10 @@ body {
 /* Main */
 .main {
     flex: 1;
-    padding: 20px;
     display: flex;
     flex-direction: column;
+    padding: 20px;
 }
-
 /* Status bar */
 .status-bar {
     display: flex;
@@ -65,60 +60,40 @@ body {
     margin-bottom: 15px;
     font-size: 14px;
 }
-
-.status {
-    padding: 5px 10px;
-    border: 1px solid #00ff88;
-}
+.status { padding: 5px 10px; border: 1px solid #00ff88; }
 
 /* Terminal */
 .terminal {
     flex: 1;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0,0,0,0.85);
     border: 2px solid #00ff88;
     padding: 15px;
     overflow-y: auto;
     white-space: pre-wrap;
+    animation: flicker 1.5s infinite;
 }
 
 /* Progress Bar */
-.progress-container {
-    margin-top: 10px;
-    height: 20px;
-    width: 100%;
-    border: 1px solid #00ff88;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #00ff88;
-    transition: width 0.2s;
-}
+.progress-container { margin-top: 10px; height: 20px; width: 100%; border: 1px solid #00ff88; }
+.progress-bar { height: 100%; width: 0%; background: #00ff88; transition: width 0.2s; }
 
 /* Warning */
-.warning {
-    color: red;
-}
+.warning { color: red; font-weight: bold; }
 
-/* Flicker animation */
+/* Flicker */
 @keyframes flicker {
     0% { opacity: 0.95; }
     50% { opacity: 1; }
     100% { opacity: 0.95; }
 }
-
-.terminal {
-    animation: flicker 1.5s infinite;
-}
 </style>
 </head>
-
 <body>
+
+<canvas id="matrix"></canvas>
 
 <div class="sidebar">
     <h2>⚡ Control Panel</h2>
-
     <button class="button" onclick="runAction('scan')">Scan Network</button>
     <button class="button" onclick="runAction('database')">Shutdown Database</button>
     <button class="button" onclick="runAction('trojan')">Deploy Trojan</button>
@@ -126,10 +101,13 @@ body {
     <button class="button" onclick="runAction('encrypt')">Encrypt Files</button>
     <button class="button" onclick="runAction('logs')">Clear Logs</button>
     <button class="button" onclick="runAction('destruct')">Self Destruct</button>
+    <button class="button" onclick="runAction('bruteforce')">Brute-force Password</button>
+    <button class="button" onclick="runAction('portscan')">Port Scan Target</button>
+    <button class="button" onclick="runAction('firewall')">Bypass Firewall</button>
+    <button class="button" onclick="runAction('cve')">Scan for CVEs</button>
 </div>
 
 <div class="main">
-
     <div class="status-bar">
         <div class="status">System: ONLINE</div>
         <div class="status">Access Level: ROOT</div>
@@ -145,82 +123,115 @@ Click an action on the left to simulate.
     <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
     </div>
-
 </div>
 
 <script>
+// MATRIX BACKGROUND
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#00ff88';
+    ctx.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random()*letters.length)];
+        ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i]=0;
+        drops[i]++;
+    }
+    requestAnimationFrame(drawMatrix);
+}
+drawMatrix();
+
+// TERMINAL SIMULATION
 const terminal = document.getElementById("terminal");
 const progressBar = document.getElementById("progressBar");
 
-function typeText(text, speed = 15) {
-    let i = 0;
-    const interval = setInterval(() => {
+function typeText(text, speed=15){
+    let i=0;
+    const interval = setInterval(()=>{
         terminal.innerHTML += text[i];
         terminal.scrollTop = terminal.scrollHeight;
         i++;
-        if (i >= text.length) clearInterval(interval);
+        if(i>=text.length) clearInterval(interval);
+    },speed);
+}
+
+function simulateProgress(callback, speed=20){
+    progressBar.style.width = "0%";
+    let width=0;
+    const interval = setInterval(()=>{
+        width++;
+        progressBar.style.width = width+"%";
+        if(width>=100){ clearInterval(interval); callback(); }
     }, speed);
 }
 
-function simulateProgress(callback) {
-    progressBar.style.width = "0%";
-    let width = 0;
-    const interval = setInterval(() => {
-        width++;
-        progressBar.style.width = width + "%";
-        if (width >= 100) {
-            clearInterval(interval);
-            callback();
-        }
-    }, 20);
+function getRandomIP(){
+    return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
 }
 
-function runAction(action) {
-    terminal.innerHTML += "\n\n> Initiating operation...\n";
+function getRandomSystem(){
+    const systems = ["Windows Server 2019","Linux Ubuntu 22.04","MacOS Monterey","IoT Device","Router"];
+    return systems[Math.floor(Math.random()*systems.length)];
+}
 
-    simulateProgress(() => {
-
+function runAction(action){
+    terminal.innerHTML += `\n\n> Initiating ${action.toUpperCase()}...\n`;
+    let speed=20;
+    if(action==='bruteforce') speed=10;
+    simulateProgress(()=>{
         const outputs = {
-            scan: `
-[+] Scanning network 192.168.1.0/24
-[+] 12 active devices detected
-[+] 2 vulnerable systems found
-[✓] Scan complete.
-            `,
-            database: `
-[!] Connecting to DB Cluster...
+            scan:`[+] Scanning network 192.168.1.0/24
+[+] 12 active devices found
+[+] Vulnerable systems:
+- ${getRandomSystem()} @ ${getRandomIP()}
+- ${getRandomSystem()} @ ${getRandomIP()}
+[✓] Scan complete.`,
+            database:`[!] Connecting to DB Cluster...
 [+] Sending termination packets...
-[✓] Database shutdown simulated.
-            `,
-            trojan: `
-[+] Generating payload...
+[✓] Database shutdown simulated.`,
+            trojan:`[+] Generating payload...
 [+] Obfuscating binary...
-[✓] Trojan deployed (simulation).
-            `,
-            exfiltrate: `
-[+] Compressing files...
+[+] Deploying to target ${getRandomIP()}...
+[✓] Trojan deployed (simulation).`,
+            exfiltrate:`[+] Compressing files...
 [+] Establishing encrypted tunnel...
-[✓] Data exfiltration complete (simulation).
-            `,
-            encrypt: `
-[!] Encrypting file system...
+[+] Uploading 3.2GB to remote node...
+[✓] Data exfiltration complete (simulation).`,
+            encrypt:`[!] Encrypting file system...
 [+] Locking directories...
-[✓] Files encrypted (simulation).
-            `,
-            logs: `
-[+] Overwriting log sectors...
-[✓] Logs cleared (simulation).
-            `,
-            destruct: `
-[!!!] SELF DESTRUCT INITIATED
-[+] Deleting system32...
+[✓] Files encrypted (simulation).`,
+            logs:`[+] Overwriting log sectors...
+[✓] Logs cleared (simulation).`,
+            destruct:`[!!!] SELF DESTRUCT INITIATED
+[+] Deleting system files...
 [+] Corrupting bootloader...
-[✓] System destroyed (simulation).
-            `
+[✓] System destroyed (simulation).`,
+            bruteforce:`[+] Launching brute-force attack on ${getRandomIP()}...
+[+] Trying passwords: "admin123", "password", "123456"
+[+] Access Granted! (simulation)
+[✓] Brute-force complete.`,
+            portscan:`[+] Scanning ports on ${getRandomIP()}...
+[+] Open ports: 22, 80, 443, 3389
+[✓] Port scan complete.`,
+            firewall:`[!] Attempting firewall bypass...
+[+] Injecting malicious packets...
+[✓] Firewall bypassed (simulation).`,
+            cve:`[+] Checking ${getRandomSystem()} for known CVEs...
+[+] CVE-2023-12345: Vulnerable
+[+] CVE-2022-67890: Patched
+[✓] CVE scan complete.`
         };
-
-        typeText(outputs[action] || "Unknown action.\n");
-    });
+        typeText(outputs[action] || "Unknown action.\n", speed);
+    }, speed);
 }
 </script>
 
