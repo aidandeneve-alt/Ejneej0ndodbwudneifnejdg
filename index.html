@@ -6,11 +6,10 @@
 <title>RTK // Green Kernel</title>
 <style>
 :root{
-  --bg:#000000;
+  --bg:#000;
   --panel:#001100;
   --accent:#00ff00;
   --text:#00ff00;
-  --muted:#007700;
 }
 
 body{
@@ -24,20 +23,11 @@ body{
 }
 
 header{
-  padding:14px 18px;
+  padding:12px 18px;
   background:var(--panel);
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  font-weight:bold;
   border-bottom:1px solid #003300;
-}
-
-.container{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
 }
 
 .output{
@@ -46,18 +36,17 @@ header{
   overflow-y:auto;
   background:#000800;
   font-size:14px;
-  line-height:1.5em;
+  line-height:1.6em;
 }
 
 .command-bar{
-  display:flex;
-  padding:12px;
+  padding:10px;
   background:var(--panel);
   border-top:1px solid #003300;
 }
 
-.command-bar input{
-  flex:1;
+input{
+  width:100%;
   padding:10px;
   background:#000800;
   border:1px solid #003300;
@@ -66,41 +55,28 @@ header{
   font-size:14px;
 }
 
-.command-bar input:focus{
+input:focus{
   outline:none;
   border-color:var(--accent);
 }
 
-.prompt{
-  color:var(--accent);
-  display:block;
-}
-
-.success{color:#00ff00; display:block;}
-.warn{color:#00ff00; display:block;}
-.error{color:#00ff00; display:block;}
-
-@media(max-width:768px){
-  header{font-size:13px;}
-}
+.prompt{color:#00ff00;}
 </style>
 </head>
 <body>
 
 <header>
-RTK // Green Kernel
-<div style="font-size:12px;color:var(--muted)">Training Mode | Access: Root</div>
+RTK // RedTeam Kernel
+<div>Training Mode | Root</div>
 </header>
 
-<div class="container">
 <div class="output" id="output">
-<span class="success">RTK initialized.</span>
+RTK initialized.<br>
 Type <span class="prompt">help</span> to list modules.
-</div>
 </div>
 
 <div class="command-bar">
-<input type="text" id="commandInput" placeholder="Enter module..." autofocus>
+<input id="commandInput" placeholder="Enter module..." autofocus>
 </div>
 
 <script>
@@ -111,75 +87,156 @@ function randomIP(){
   return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
 }
 
-function typeText(text,speed=12){
-  return new Promise(resolve=>{
-    let i=0;
-    const interval=setInterval(()=>{
-      if(text[i]==="\n") output.innerHTML+="<br>";
-      else output.innerHTML+=text[i];
-      output.scrollTop=output.scrollHeight;
-      i++;
-      if(i>=text.length){ clearInterval(interval); resolve();}
-    },speed);
-  });
-}
-
 function normalize(cmd){
   return cmd.toLowerCase().replace(/[-\s]/g,"");
 }
 
-const modules=[
-"scan-net","scan-deep","enum-users","enum-services","dump-hashes",
-"brute-ssh","brute-ftp","deploy-beacon","inject-shell","exfil-data",
-"wipe-logs","spoof-mac","bypass-av","encrypt-vol","pivot-internal",
-"lateral-move","priv-esc","harvest-cookies","scan-cve","scan-config",
-"capture-handshake","crack-wifi","clone-site","phish-mail","monitor-traffic",
-"sniff-packets","open-backdoor","create-user","grant-root","scrape-db",
-"ghost-mode","stealth-on","stealth-off","kill-service","shutdown-host",
-"self-destruct","flood-syn","flood-http","scan-zero","dump-cred",
-"spoof-dns","bypass-edr","trigger-ransom","harvest-tokens","trace-route",
-"scrape-api","scrape-files","scan-fast","enum-shares","lock-system",
-"deploy-rat","deploy-payload","wipe-traces","monitor-process","scan-ports",
-"scan-os","detect-firewall","scan-web","scan-internal","exfil-db"
-];
+function typeLines(lines,speed=15){
+  return new Promise(resolve=>{
+    let i=0;
+    function next(){
+      if(i<lines.length){
+        output.innerHTML+=lines[i]+"<br>";
+        output.scrollTop=output.scrollHeight;
+        i++;
+        setTimeout(next,speed);
+      } else resolve();
+    }
+    next();
+  });
+}
 
-const moduleMap={};
-modules.forEach(m=>{moduleMap[normalize(m)]=m;});
+const modules = {
+
+scannet: async()=>{
+  await typeLines([
+  "Starting network discovery...",
+  "Subnet: 192.168.1.0/24",
+  "Host found: "+randomIP(),
+  "Host found: "+randomIP(),
+  "Host found: "+randomIP(),
+  "Scan complete. 3 hosts responsive."
+  ]);
+},
+
+scandeep: async()=>{
+  await typeLines([
+  "Deep scan engaged...",
+  "Fingerprinting OS...",
+  "Detected: Ubuntu 22.04 LTS",
+  "Enumerating services...",
+  "Open ports: 22, 80, 443",
+  "Vulnerabilities: None critical."
+  ]);
+},
+
+deploytrojan: async()=>{
+  await typeLines([
+  "Building trojan binary...",
+  "Obfuscating payload...",
+  "Embedding persistence hook...",
+  "Uploading to "+randomIP(),
+  "Execution triggered.",
+  "Trojan deployed successfully (simulation)."
+  ]);
+},
+
+deployrat: async()=>{
+  await typeLines([
+  "Generating remote access toolkit...",
+  "Encrypting C2 channel...",
+  "Beacon interval set to 30s",
+  "Connecting to victim host...",
+  "Session established (simulated)."
+  ]);
+},
+
+buildpayload: async()=>{
+  await typeLines([
+  "Payload builder started...",
+  "Architecture: x64",
+  "Encoding shellcode...",
+  "Injecting loader stub...",
+  "Payload compiled successfully."
+  ]);
+},
+
+droploader: async()=>{
+  await typeLines([
+  "Preparing staged loader...",
+  "Downloading stage 2 components...",
+  "Integrity check passed.",
+  "Loader execution simulated."
+  ]);
+},
+
+privesc: async()=>{
+  await typeLines([
+  "Checking privilege escalation vectors...",
+  "Kernel exploit available.",
+  "Attempting escalation...",
+  "Privilege level: SYSTEM (simulated)."
+  ]);
+},
+
+brutessh: async()=>{
+  await typeLines([
+  "Launching SSH brute-force...",
+  "Target: "+randomIP(),
+  "Attempts: 124",
+  "Password discovered: admin123 (simulated)."
+  ]);
+},
+
+wipelogs: async()=>{
+  await typeLines([
+  "Locating system logs...",
+  "Overwriting entries...",
+  "Clearing authentication history...",
+  "Logs wiped (simulation)."
+  ]);
+},
+
+selfdestruct: async()=>{
+  await typeLines([
+  "Self destruct initiated...",
+  "Removing binaries...",
+  "Destroying temp files...",
+  "RTK session terminated (simulation)."
+  ]);
+},
+
+help: async()=>{
+  await typeLines([
+  "Available Modules:",
+  "scannet",
+  "scandeep",
+  "deploytrojan",
+  "deployrat",
+  "buildpayload",
+  "droploader",
+  "privesc",
+  "brutessh",
+  "wipelogs",
+  "selfdestruct"
+  ],10);
+}
+
+};
 
 async function run(cmdRaw){
-  let clean=normalize(cmdRaw);
+  const clean=normalize(cmdRaw);
   output.innerHTML+="<br><span class='prompt'>rtk ></span> "+cmdRaw+"<br>";
-
-  if(clean==="help"){
-    await typeText("\nLoaded modules:\n\n");
-    for(let m of modules){
-      await typeText(" - "+m+"\n",8);
-    }
-    return;
+  if(modules[clean]){
+    await modules[clean]();
+  } else {
+    await typeLines(["Module not recognized."],10);
   }
-
-  if(clean==="") return;
-
-  let found=moduleMap[clean];
-
-  if(!found){
-    await typeText("\n<span class='error'>Module not found.</span>\n",8);
-    return;
-  }
-
-  await typeText("\nInitializing "+found+"...\n",8);
-  await typeText("Target: "+randomIP()+"\n",8);
-  await typeText("Status: Executing...\n",8);
-
-  await new Promise(r=>setTimeout(r,400));
-
-  await typeText("Result: Operation completed (simulation mode).\n",8);
-  await typeText("Integrity: Stable\n",8);
 }
 
 input.addEventListener("keydown",e=>{
   if(e.key==="Enter"){
-    let cmd=input.value.trim();
+    const cmd=input.value.trim();
     if(cmd!=="") run(cmd);
     input.value="";
   }
