@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTK // RedTeam Kernel</title>
+<title>RTK // Green Kernel</title>
 <style>
 :root{
-  --bg:#0c0f14;
-  --panel:#141821;
-  --accent:#ff4747;
-  --text:#d6d6d6;
-  --muted:#6b7280;
+  --bg:#000000;
+  --panel:#001100;
+  --accent:#00ff00;
+  --text:#00ff00;
+  --muted:#007700;
 }
 
 body{
@@ -30,7 +30,7 @@ header{
   justify-content:space-between;
   align-items:center;
   font-weight:bold;
-  border-bottom:1px solid #1f2937;
+  border-bottom:1px solid #003300;
 }
 
 .container{
@@ -44,7 +44,7 @@ header{
   flex:1;
   padding:20px;
   overflow-y:auto;
-  background:#0a0d12;
+  background:#000800;
   font-size:14px;
   line-height:1.5em;
 }
@@ -53,14 +53,14 @@ header{
   display:flex;
   padding:12px;
   background:var(--panel);
-  border-top:1px solid #1f2937;
+  border-top:1px solid #003300;
 }
 
 .command-bar input{
   flex:1;
   padding:10px;
-  background:#0f131a;
-  border:1px solid #1f2937;
+  background:#000800;
+  border:1px solid #003300;
   color:var(--text);
   font-family:monospace;
   font-size:14px;
@@ -73,11 +73,12 @@ header{
 
 .prompt{
   color:var(--accent);
+  display:block;
 }
 
-.success{color:#4ade80;}
-.warn{color:#facc15;}
-.error{color:#f87171;}
+.success{color:#00ff00; display:block;}
+.warn{color:#00ff00; display:block;}
+.error{color:#00ff00; display:block;}
 
 @media(max-width:768px){
   header{font-size:13px;}
@@ -87,7 +88,7 @@ header{
 <body>
 
 <header>
-RTK // RedTeam Kernel
+RTK // Green Kernel
 <div style="font-size:12px;color:var(--muted)">Training Mode | Access: Root</div>
 </header>
 
@@ -111,23 +112,22 @@ function randomIP(){
 }
 
 function typeText(text,speed=12){
-  let i=0;
   return new Promise(resolve=>{
+    let i=0;
     const interval=setInterval(()=>{
-      output.innerHTML+=text[i];
+      if(text[i]==="\n") output.innerHTML+="<br>";
+      else output.innerHTML+=text[i];
       output.scrollTop=output.scrollHeight;
       i++;
-      if(i>=text.length){clearInterval(interval);resolve();}
+      if(i>=text.length){ clearInterval(interval); resolve();}
     },speed);
   });
 }
 
-// Normalize command: remove dashes, spaces, lowercase
 function normalize(cmd){
   return cmd.toLowerCase().replace(/[-\s]/g,"");
 }
 
-// 60+ modules
 const modules=[
 "scan-net","scan-deep","enum-users","enum-services","dump-hashes",
 "brute-ssh","brute-ftp","deploy-beacon","inject-shell","exfil-data",
@@ -143,13 +143,12 @@ const modules=[
 "scan-os","detect-firewall","scan-web","scan-internal","exfil-db"
 ];
 
-// Precompute normalized module names for lookup
 const moduleMap={};
 modules.forEach(m=>{moduleMap[normalize(m)]=m;});
 
 async function run(cmdRaw){
   let clean=normalize(cmdRaw);
-  output.innerHTML+=`\n\n<span class="prompt">rtk ></span> ${cmdRaw}\n`;
+  output.innerHTML+="<br><span class='prompt'>rtk ></span> "+cmdRaw+"<br>";
 
   if(clean==="help"){
     await typeText("\nLoaded modules:\n\n");
