@@ -1,10 +1,16 @@
 /* Root colors */
 :root{
-  --bg:#000;
+  --bg:#000000;
   --panel:#001100;
   --accent:#00ff00;
   --text:#00ff00;
   --muted:#007700;
+}
+
+/* Force all text to inherit green */
+body, body * {
+  color: var(--text) !important;
+  background: transparent !important;
 }
 
 /* General body */
@@ -39,6 +45,7 @@ header{
   font-size:14px;
   line-height:1.6em;
   white-space:pre-wrap;
+  color: var(--text);
 }
 
 /* Command bar */
@@ -56,6 +63,7 @@ input{
   color:var(--text);
   font-family:monospace;
   font-size:14px;
+  caret-color: var(--accent);
 }
 
 input:focus{
@@ -64,7 +72,7 @@ input:focus{
   box-shadow:0 0 5px var(--accent);
 }
 
-/* Prompt */
+/* Prompt text */
 .prompt{
   color:var(--accent);
   display:block;
@@ -98,14 +106,14 @@ input:focus{
   z-index:9999;
 }
 
+/* Optional message styles */
+.warn{color:#ff0000; display:block;}
+.success{color:#00ff00; display:block;}
+.error{color:#ff4444; display:block;}
+
 /* Mobile responsive */
 @media(max-width:768px){
   header{font-size:14px;}
   .output{font-size:13px; padding:15px;}
   input{font-size:13px; padding:8px;}
 }
-
-/* Optional: warning style (if needed in modules) */
-.warn{color:#ff0000; display:block;}
-.success{color:#00ff00; display:block;}
-.error{color:#ff4444; display:block;}
